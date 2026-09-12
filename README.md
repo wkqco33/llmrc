@@ -98,6 +98,17 @@ cargo clippy --workspace --all-features --all-targets -- -D warnings
 No real provider or bot credentials are required by the test suite; network
 smoke tests should remain opt-in.
 
+## Examples
+
+Self-contained, executable examples are located in [`examples/`](examples/README.md):
+
+- `cargo run --example 01_basic_agent`: Configuring an agent and inspecting token accounting.
+- `cargo run --example 02_custom_tools`: Registering custom tools and handling tool call reasoning loops.
+- `cargo run --example 03_bot_conversation --features bots`: Multi-platform bot session locks and message splitting.
+- `cargo run --example 04_streaming_and_retry`: Exponential backoff with jitter and stream retry semantics.
+
+See [examples/README.md](examples/README.md) for details.
+
 ## Guidelines & Documentation
 
 - [AGENTS.md](AGENTS.md): Development guide and invariants for automated coding agents

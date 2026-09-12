@@ -860,6 +860,7 @@ name = "llmrc"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "futures",
  "llmrc-agent",
  "llmrc-bots-core",
  "llmrc-bots-discord",

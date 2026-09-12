@@ -69,6 +69,20 @@ llmrc-bots-slack = { path = "crates/bots-slack", version = "0.1.0", optional = t
 
 [dev-dependencies]
 async-trait.workspace = true
+futures.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
+
+[[example]]
+name = "01_basic_agent"
+
+[[example]]
+name = "02_custom_tools"
+
+[[example]]
+name = "03_bot_conversation"
+required-features = ["bots"]
+
+[[example]]
+name = "04_streaming_and_retry"
