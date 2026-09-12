@@ -1,43 +1,27 @@
 # llmrc-bots-slack
 
-Slack event mapping for [`llmrc`](https://github.com/wkqco33/llmrc) bots.
+Thin, platform-neutral Slack mapping for [`llmrc`](https://crates.io/crates/llmrc) bots.
 
-`SlackAdapter` converts Slack channel identifiers, authors, and message text
-into `llmrc-bots-core::BotEvent` values (platform tag `slack`) and extracts
-response text for sending back. This is a thin mapper: your application still
-drives Slack with
-[slack-morphism](https://crates.io/crates/slack-morphism).
+## Overview
 
-## Features
+`llmrc-bots-slack` maps Slack events into platform-neutral `BotEvent` representations and converts `BotResponse` into Slack-compliant payloads.
 
-| Feature | Default | Description |
-| --- | --- | --- |
-| `slack-morphism` | no | Reserved for a future slack-morphism integration; adds no dependencies today |
+## Usage
 
-Most applications should depend on the [`llmrc`](https://crates.io/crates/llmrc)
-facade with the `slack` feature instead of using this crate directly.
+Via top-level [`llmrc`](https://crates.io/crates/llmrc):
 
-## Install
+```toml
+[dependencies]
+llmrc = { version = "0.1", features = ["slack"] }
+```
+
+Direct dependency:
 
 ```toml
 [dependencies]
 llmrc-bots-slack = "0.1"
 ```
 
-## Usage
-
-```rust
-use llmrc_bots_slack::SlackAdapter;
-
-let event = SlackAdapter::event("C12345", Some("U67890".into()), "hello");
-assert_eq!(event.key.platform, "slack");
-```
-
 ## Documentation
 
-- [User guide](https://github.com/wkqco33/llmrc/blob/master/GUIDE.md)
-- [API reference](https://docs.rs/llmrc-bots-slack)
-
-## License
-
-MIT
+Full documentation is available on [docs.rs](https://docs.rs/llmrc-bots-slack).

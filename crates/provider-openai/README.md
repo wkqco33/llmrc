@@ -1,43 +1,32 @@
 # llmrc-openai
 
-OpenAI and Azure OpenAI providers for the
-[`llmrc`](https://github.com/wkqco33/llmrc) LLM runtime, backed by
-[`async-openai`](https://crates.io/crates/async-openai).
+OpenAI and Azure OpenAI provider adapter for [`llmrc`](https://crates.io/crates/llmrc).
 
-Supports chat, streaming, embeddings, tool calls, and multimodal content, and
-maps SDK errors onto `llmrc-core`'s retryable `LlmError` variants.
+## Overview
 
-Most applications should depend on the [`llmrc`](https://crates.io/crates/llmrc)
-facade with the `openai` or `azure` feature instead of using this crate
-directly.
+`llmrc-openai` implements the `llmrc_core::ChatProvider` and `llmrc_core::EmbeddingProvider` traits using `async-openai`:
 
-## Install
+- Standard OpenAI (`OpenAiProvider::openai`)
+- Custom base URL compatible endpoints (`OpenAiProvider::openai_with_base_url`)
+- Azure OpenAI deployments (`OpenAiProvider::azure`)
+- Streaming completions, function/tool calling, and multimodal inputs
+
+## Usage
+
+Via top-level [`llmrc`](https://crates.io/crates/llmrc):
+
+```toml
+[dependencies]
+llmrc = { version = "0.1", features = ["openai"] }
+```
+
+Direct dependency:
 
 ```toml
 [dependencies]
 llmrc-openai = "0.1"
 ```
 
-## Usage
-
-```rust,no_run
-# use llmrc_openai::OpenAiProvider;
-let provider = OpenAiProvider::openai("sk-...");
-
-// Azure OpenAI
-let provider = OpenAiProvider::azure(
-    "azure-key",
-    "https://my-resource.openai.azure.com",
-    "my-deployment",
-    "2024-10-21",
-);
-```
-
 ## Documentation
 
-- [User guide](https://github.com/wkqco33/llmrc/blob/master/GUIDE.md)
-- [API reference](https://docs.rs/llmrc-openai)
-
-## License
-
-MIT
+Full documentation is available on [docs.rs](https://docs.rs/llmrc-openai).

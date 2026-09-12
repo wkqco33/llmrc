@@ -2,6 +2,23 @@
 //!
 //! Provider implementations are feature-gated so applications only compile
 //! the SDKs they use.
+//!
+//! # Examples
+//!
+//! ```
+//! use llmrc::prelude::*;
+//!
+//! let user_msg = Message::user("Hello from llmrc");
+//! assert_eq!(user_msg.role, MessageRole::User);
+//! assert_eq!(user_msg.text(), "Hello from llmrc");
+//!
+//! let config = AgentConfig {
+//!     model: "gpt-4o-mini".into(),
+//!     max_turns: 4,
+//!     ..Default::default()
+//! };
+//! assert_eq!(config.max_turns, 4);
+//! ```
 
 pub use llmrc_agent as agent;
 pub use llmrc_agent::{
@@ -33,6 +50,15 @@ pub use llmrc_bots_telegram as telegram;
 pub use llmrc_mcp as mcp;
 
 /// The most commonly used types for applications.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc::prelude::*;
+///
+/// let message = Message::assistant("Ready to help.");
+/// assert_eq!(message.role, MessageRole::Assistant);
+/// ```
 pub mod prelude {
     pub use crate::{
         Agent, AgentConfig, AgentError, AgentEvent, ChatProvider, ChatRequest, ChatResponse,

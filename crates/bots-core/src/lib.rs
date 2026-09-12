@@ -36,6 +36,17 @@ impl fmt::Display for ConversationId {
     }
 }
 
+/// Unique identifier for a platform conversation or channel.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_bots_core::ConversationKey;
+///
+/// let key = ConversationKey::new("discord", "channel-999");
+/// assert_eq!(key.platform, "discord");
+/// assert_eq!(key.storage_key(), "discord:channel-999");
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct ConversationKey {
     pub platform: String,
@@ -139,6 +150,15 @@ pub enum BotError {
 
 /// Splits on UTF-8 character boundaries and prefers a newline or whitespace
 /// before the hard limit. Every returned part is at most `max_bytes` bytes.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_bots_core::split_message;
+///
+/// let parts = split_message("Hello world!", 10).unwrap();
+/// assert_eq!(parts, vec!["Hello ", "world!"]);
+/// ```
 pub fn split_message(text: &str, max_bytes: usize) -> Result<Vec<String>, BotError> {
     if max_bytes == 0 {
         return Err(BotError::InvalidSplitLimit);

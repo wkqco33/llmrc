@@ -7,6 +7,7 @@ description = "Thin, platform-neutral Slack mapping for llmrc bots"
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
+documentation.workspace = true
 categories.workspace = true
 keywords = ["llm", "slack", "bot", "ai", "chatbot"]
 

@@ -1,16 +1,26 @@
 # llmrc-core
 
-Provider-independent domain types and async contracts for the
-[`llmrc`](https://github.com/wkqco33/llmrc) LLM runtime.
+Provider-independent domain types and async contracts for the [`llmrc`](https://crates.io/crates/llmrc) modular LLM runtime.
 
-This crate defines `Message`, `ChatRequest`, `ChatResponse`, `StreamEvent`,
-`ToolDefinition`, `LlmError`, `Secret`, and the `ChatProvider` /
-`EmbeddingProvider` traits. It has no provider SDK dependency.
+## Overview
 
-Most applications should depend on the [`llmrc`](https://crates.io/crates/llmrc)
-facade with a feature flag instead of using this crate directly.
+`llmrc-core` defines the foundational data types and trait contracts for LLM interactions without depending on any specific provider SDK:
 
-## Install
+- **Domain Types**: `Message`, `ChatRequest`, `ChatResponse`, `ContentPart`, `ToolDefinition`, `ToolCall`, `TokenUsage`
+- **Contracts**: `ChatProvider`, `EmbeddingProvider`
+- **Error Model**: `LlmError`, `ErrorKind`
+- **Secret Safety**: `Secret` (automatic redaction in `Debug`, no `Display` implementation)
+
+## Usage
+
+Most applications should depend on the top-level [`llmrc`](https://crates.io/crates/llmrc) facade crate:
+
+```toml
+[dependencies]
+llmrc = { version = "0.1", features = ["openai"] }
+```
+
+If you are implementing a custom provider adapter, depend on `llmrc-core` directly:
 
 ```toml
 [dependencies]
@@ -19,9 +29,4 @@ llmrc-core = "0.1"
 
 ## Documentation
 
-- [User guide](https://github.com/wkqco33/llmrc/blob/master/GUIDE.md)
-- [API reference](https://docs.rs/llmrc-core)
-
-## License
-
-MIT
+Full documentation is available on [docs.rs](https://docs.rs/llmrc-core).

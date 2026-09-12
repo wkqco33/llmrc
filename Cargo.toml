@@ -7,6 +7,7 @@ description = "A predictable, modular LLM provider facade for Rust"
 license = "MIT"
 repository.workspace = true
 homepage.workspace = true
+documentation.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
@@ -33,6 +34,7 @@ rust-version = "1.88"
 license = "MIT"
 repository = "https://github.com/wkqco33/llmrc"
 homepage = "https://github.com/wkqco33/llmrc"
+documentation = "https://docs.rs/llmrc"
 keywords = ["llm", "ai", "openai", "ollama", "mcp"]
 categories = [
     "api-bindings",

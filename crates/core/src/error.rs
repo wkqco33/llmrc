@@ -19,6 +19,20 @@ pub enum ErrorKind {
 }
 
 /// Errors exposed by provider implementations.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_core::{ErrorKind, LlmError};
+///
+/// let err = LlmError::Timeout;
+/// assert_eq!(err.kind(), ErrorKind::Timeout);
+/// assert!(err.is_retryable());
+///
+/// let auth_err = LlmError::Authentication;
+/// assert_eq!(auth_err.kind(), ErrorKind::Authentication);
+/// assert!(!auth_err.is_retryable());
+/// ```
 #[derive(Debug, Error)]
 #[non_exhaustive]
 pub enum LlmError {
@@ -74,6 +88,16 @@ impl LlmError {
 }
 
 /// A secret string that deliberately does not reveal its contents in `Debug`.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_core::Secret;
+///
+/// let secret = Secret::new("sk-secret-key-12345");
+/// assert_eq!(format!("{secret:?}"), "Secret(REDACTED)");
+/// assert_eq!(secret.expose(), "sk-secret-key-12345");
+/// ```
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct Secret(String);
 

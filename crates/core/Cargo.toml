@@ -7,6 +7,7 @@ description = "Provider-independent domain types and async contracts for llmrc"
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
+documentation.workspace = true
 categories.workspace = true
 keywords = ["llm", "ai", "async", "traits", "types"]
 

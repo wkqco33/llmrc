@@ -10,6 +10,16 @@ pub enum MessageRole {
     Tool,
 }
 
+/// A single part of a message, representing text or multimodal input.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_core::ContentPart;
+///
+/// let part = ContentPart::text("Hello world");
+/// assert_eq!(part.as_text(), Some("Hello world"));
+/// ```
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ContentPart {
@@ -37,6 +47,21 @@ pub enum ImageSource {
     Base64 { media_type: String, data: String },
 }
 
+/// A conversation message exchanged with an LLM provider.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_core::{Message, MessageRole};
+///
+/// let user_msg = Message::user("How does Rust prevent data races?");
+/// assert_eq!(user_msg.role, MessageRole::User);
+/// assert_eq!(user_msg.text(), "How does Rust prevent data races?");
+///
+/// let asst_msg = Message::assistant("Via ownership and Send/Sync traits.");
+/// assert_eq!(asst_msg.role, MessageRole::Assistant);
+/// assert_eq!(asst_msg.text(), "Via ownership and Send/Sync traits.");
+/// ```
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Message {
     pub role: MessageRole,

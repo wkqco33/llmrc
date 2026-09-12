@@ -23,6 +23,15 @@ pub enum Jitter {
 }
 
 /// A shared retry allowance. Cloning a budget shares the allowance.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_runtime::RetryBudget;
+///
+/// let budget = RetryBudget::new(5);
+/// assert_eq!(budget.remaining(), 5);
+/// ```
 #[derive(Clone)]
 pub struct RetryBudget(Arc<AtomicU32>);
 
@@ -56,6 +65,22 @@ impl fmt::Debug for RetryBudget {
 /// error types. The default is [`LlmError::is_retryable`].
 pub type RetryClassifier = Arc<dyn Fn(&LlmError) -> bool + Send + Sync>;
 
+/// Bounded exponential backoff policy with jitter and budget.
+///
+/// # Examples
+///
+/// ```
+/// use std::time::Duration;
+/// use llmrc_runtime::{Jitter, RetryPolicy};
+///
+/// let policy = RetryPolicy::builder()
+///     .max_retries(3)
+///     .base_delay(Duration::from_millis(50))
+///     .jitter(Jitter::Equal)
+///     .build();
+/// assert_eq!(policy.max_retries, 3);
+/// assert_eq!(policy.base_delay, Duration::from_millis(50));
+/// ```
 #[derive(Clone)]
 pub struct RetryPolicy {
     pub max_retries: u32,

@@ -37,6 +37,16 @@ pub trait TokenCounter: Send + Sync {
 
 /// A documented heuristic for providers without a local tokenizer: UTF-8
 /// characters divided by four, with a minimum of one token for non-empty text.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_runtime::{HeuristicTokenCounter, TokenCounter};
+///
+/// let counter = HeuristicTokenCounter;
+/// let result = counter.count_text("hello world");
+/// assert_eq!(result.tokens, 3);
+/// ```
 #[derive(Debug, Clone, Copy, Default)]
 pub struct HeuristicTokenCounter;
 
@@ -112,6 +122,24 @@ impl TokenCounter for ProviderReportedTokenCounter {
     }
 }
 
+/// Accumulates prompt and completion token counts across LLM execution steps.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_core::{TokenCount, TokenUsage};
+/// use llmrc_runtime::TokenAccounting;
+///
+/// let mut accounting = TokenAccounting::default();
+/// accounting.record_usage(&TokenUsage {
+///     prompt_tokens: 15,
+///     completion_tokens: 25,
+///     total_tokens: 40,
+///     count_type: TokenCount::ProviderReported,
+/// });
+/// assert_eq!(accounting.prompt_tokens, 15);
+/// assert_eq!(accounting.completion_tokens, 25);
+/// ```
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct TokenAccounting {
     pub prompt_tokens: u64,

@@ -1,53 +1,32 @@
 # llmrc-mcp
 
-Model Context Protocol bridges and client transports for the
-[`llmrc`](https://github.com/wkqco33/llmrc) LLM runtime.
+Model Context Protocol (MCP) bridge and client transports for [`llmrc`](https://crates.io/crates/llmrc).
 
-`McpBridge` wraps any `McpTransport`, namespaces remote tools as
-`server__tool`, and registers them into an `llmrc-agent` `ToolRegistry` so an
-agent can call MCP tools like local ones. Built-in transports speak
-newline-delimited JSON-RPC over stdio and JSON-RPC over Streamable HTTP.
+## Overview
 
-## Features
+`llmrc-mcp` connects LLM agents to external MCP tools:
 
-| Feature | Default | Description |
-| --- | --- | --- |
-| `transports` | yes | Built-in stdio and Streamable HTTP transports |
-| `rmcp` | no | Adapters for the official [`rmcp`](https://crates.io/crates/rmcp) 3.x client |
+- **Transports**: Built-in `StdioTransport` (child process stdin/stdout) and `StreamableHttpTransport` (HTTP/SSE).
+- **Tool Pool & Namespacing**: `McpPool` and `McpBridge` for managing multiple MCP servers with namespace isolation.
+- **Agent Integration**: Automatically converts MCP tool definitions into `llmrc_agent::Tool` implementations.
+- **Optional Official SDK Adapter**: Feature-gated `rmcp` adapter.
 
-Most applications should depend on the [`llmrc`](https://crates.io/crates/llmrc)
-facade with the `mcp` feature instead of using this crate directly.
+## Usage
 
-## Install
+Via top-level [`llmrc`](https://crates.io/crates/llmrc):
+
+```toml
+[dependencies]
+llmrc = { version = "0.1", features = ["mcp"] }
+```
+
+Direct dependency:
 
 ```toml
 [dependencies]
 llmrc-mcp = "0.1"
-
-# Optional: official rmcp client adapters
-llmrc-mcp = { version = "0.1", features = ["rmcp"] }
-```
-
-## Usage
-
-```rust,no_run
-# use llmrc_mcp::{McpBridge, StdioTransport};
-# async fn run() -> Result<(), llmrc_mcp::McpError> {
-let transport = StdioTransport::spawn("npx", &["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]).await?;
-let bridge = McpBridge::new("filesystem", transport);
-bridge.refresh().await?;
-
-let mut registry = llmrc_agent::ToolRegistry::new();
-bridge.register_into(&mut registry).await?;
-# Ok(())
-# }
 ```
 
 ## Documentation
 
-- [User guide](https://github.com/wkqco33/llmrc/blob/master/GUIDE.md)
-- [API reference](https://docs.rs/llmrc-mcp)
-
-## License
-
-MIT
+Full documentation is available on [docs.rs](https://docs.rs/llmrc-mcp).

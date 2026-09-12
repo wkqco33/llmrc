@@ -1,17 +1,25 @@
 # llmrc-runtime
 
-Retry policies and token accounting for the
-[`llmrc`](https://github.com/wkqco33/llmrc) LLM runtime.
+Retry and token-accounting primitives for the [`llmrc`](https://crates.io/crates/llmrc) modular LLM runtime.
 
-Provides `RetryPolicy` (bounded exponential backoff with jitter, shared
-`RetryBudget`, and `Retry-After` honoring), plus pluggable `TokenCounter`
-implementations and `TokenAccounting` with explicit
-`Exact` / `ProviderReported` / `Estimated` provenance.
+## Overview
 
-Most applications should depend on the [`llmrc`](https://crates.io/crates/llmrc)
-facade instead of using this crate directly.
+`llmrc-runtime` provides foundational execution primitives:
 
-## Install
+- **Bounded Retry Policies**: `RetryPolicy` with configurable max retries, exponential backoff, jitter (`Full`, `Equal`, `None`), and retry budgets.
+- **Safe Stream Retries**: Distinguishes transient stream initialization errors from in-flight stream failures to guarantee that visible chunks are never duplicated.
+- **Token Accounting**: `TokenAccounting` tracking prompt, completion, and total tokens across multiple steps, plus `TokenCounter` traits (`HeuristicTokenCounter`, `ProviderReportedTokenCounter`).
+
+## Usage
+
+Most applications should use the top-level [`llmrc`](https://crates.io/crates/llmrc) facade:
+
+```toml
+[dependencies]
+llmrc = { version = "0.1" }
+```
+
+Direct dependency:
 
 ```toml
 [dependencies]
@@ -20,9 +28,4 @@ llmrc-runtime = "0.1"
 
 ## Documentation
 
-- [User guide](https://github.com/wkqco33/llmrc/blob/master/GUIDE.md)
-- [API reference](https://docs.rs/llmrc-runtime)
-
-## License
-
-MIT
+Full documentation is available on [docs.rs](https://docs.rs/llmrc-runtime).

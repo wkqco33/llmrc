@@ -7,6 +7,7 @@ description = "Retry and token-accounting primitives for llmrc"
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
+documentation.workspace = true
 categories.workspace = true
 keywords = ["llm", "retry", "tokens", "ai", "async"]
 

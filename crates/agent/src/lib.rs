@@ -94,6 +94,20 @@ impl ToolRegistry {
     }
 }
 
+/// A conversation session maintaining message history.
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_agent::Session;
+/// use llmrc_core::Message;
+///
+/// let mut session = Session::new("session-123");
+/// assert_eq!(session.id, "session-123");
+/// assert!(session.history.is_empty());
+/// session.history.push(Message::user("Hello"));
+/// assert_eq!(session.history.len(), 1);
+/// ```
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Session {
     pub id: String,
@@ -126,21 +140,42 @@ impl fmt::Debug for InMemorySessionStore {
     }
 }
 
+impl InMemorySessionStore {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
 #[async_trait]
 impl SessionStore for InMemorySessionStore {
     async fn load(&self, id: &str) -> Result<Option<Session>, AgentError> {
-        Ok(self.sessions.lock().await.get(id).cloned())
+        let sessions = self.sessions.lock().await;
+        Ok(sessions.get(id).cloned())
     }
 
     async fn save(&self, session: Session) -> Result<(), AgentError> {
-        self.sessions
-            .lock()
-            .await
-            .insert(session.id.clone(), session);
+        let mut sessions = self.sessions.lock().await;
+        sessions.insert(session.id.clone(), session);
         Ok(())
     }
 }
 
+/// Configuration bounds for an [`Agent`].
+///
+/// # Examples
+///
+/// ```
+/// use llmrc_agent::AgentConfig;
+///
+/// let config = AgentConfig {
+///     model: "gpt-4o-mini".into(),
+///     max_turns: 5,
+///     ..Default::default()
+/// };
+/// assert_eq!(config.model, "gpt-4o-mini");
+/// assert_eq!(config.max_turns, 5);
+/// assert_eq!(config.max_concurrency, 4);
+/// ```
 #[derive(Debug, Clone)]
 pub struct AgentConfig {
     pub model: String,
