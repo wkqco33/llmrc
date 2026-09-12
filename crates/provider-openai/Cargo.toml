@@ -1,0 +1,16 @@
+[package]
+name = "llmrc-openai"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "OpenAI and Azure OpenAI providers for llmrc"
+license.workspace = true
+
+[dependencies]
+async-openai.workspace = true
+async-trait.workspace = true
+futures.workspace = true
+llmrc-core = { path = "../core", version = "0.1.0" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

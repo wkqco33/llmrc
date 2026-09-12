@@ -1,0 +1,18 @@
+[package]
+name = "llmrc-agent"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Provider-backed tool-using agent runtime for llmrc"
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+futures.workspace = true
+llmrc-core = { path = "../core", version = "0.1.0" }
+llmrc-runtime = { path = "../runtime", version = "0.1.0" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true

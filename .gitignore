@@ -1,0 +1,23 @@
+/target
+**/*.rs.bk
+Cargo.lock.bak
+
+# Secrets and environment variables
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.cert
+*.crt
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

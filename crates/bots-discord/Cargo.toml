@@ -1,0 +1,14 @@
+[package]
+name = "llmrc-bots-discord"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Thin, platform-neutral Discord mapping for llmrc bots"
+license.workspace = true
+
+[features]
+default = []
+serenity = []
+
+[dependencies]
+llmrc-bots-core = { path = "../bots-core", version = "0.1.0" }

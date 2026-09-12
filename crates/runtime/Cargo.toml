@@ -1,0 +1,14 @@
+[package]
+name = "llmrc-runtime"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Retry and token-accounting primitives for llmrc"
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+futures.workspace = true
+llmrc-core = { path = "../core", version = "0.1.0" }
+tokio.workspace = true
+tokio-util.workspace = true

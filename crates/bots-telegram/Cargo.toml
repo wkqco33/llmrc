@@ -1,0 +1,14 @@
+[package]
+name = "llmrc-bots-telegram"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Thin, platform-neutral Telegram mapping for llmrc bots"
+license.workspace = true
+
+[features]
+default = []
+teloxide = []
+
+[dependencies]
+llmrc-bots-core = { path = "../bots-core", version = "0.1.0" }

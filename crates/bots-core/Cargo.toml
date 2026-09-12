@@ -1,0 +1,18 @@
+[package]
+name = "llmrc-bots-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Platform-neutral conversation and bot runtime for llmrc"
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+llmrc-agent = { path = "../agent", version = "0.1.0" }
+serde.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+
+[dev-dependencies]
+llmrc-core = { path = "../core", version = "0.1.0" }
