@@ -36,8 +36,8 @@ CRATES=(
 )
 
 # Fail loudly if a crate is added, renamed, or removed without updating the list.
-members="$(cargo metadata --no-deps --format-version 1 --locked \
-  | jq -r '.packages[].name' | sort | tr '\n' ' ')"
+members="$(cargo metadata --no-deps --format-version 1 --locked |
+  jq -r '.packages[].name' | sort | tr '\n' ' ')"
 expected="$(printf '%s\n' "${CRATES[@]}" | sort | tr '\n' ' ')"
 [ "$members" = "$expected" ] || crash "crate list is stale; workspace has: ${members}"
 
