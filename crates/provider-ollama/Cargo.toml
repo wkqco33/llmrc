@@ -5,6 +5,10 @@ edition.workspace = true
 rust-version.workspace = true
 description = "Ollama provider for llmrc"
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+categories.workspace = true
+keywords = ["llm", "ollama", "ai", "local", "async"]
 
 [dependencies]
 async-trait.workspace = true

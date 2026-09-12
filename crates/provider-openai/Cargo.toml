@@ -5,6 +5,10 @@ edition.workspace = true
 rust-version.workspace = true
 description = "OpenAI and Azure OpenAI providers for llmrc"
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+categories.workspace = true
+keywords = ["llm", "openai", "azure", "ai", "async"]
 
 [dependencies]
 async-openai.workspace = true

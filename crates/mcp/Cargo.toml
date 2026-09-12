@@ -5,6 +5,10 @@ edition.workspace = true
 rust-version.workspace = true
 description = "MCP tool bridge and client transports for llmrc"
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+categories.workspace = true
+keywords = ["llm", "mcp", "ai", "tools", "jsonrpc"]
 
 [features]
 default = ["transports"]

@@ -5,6 +5,10 @@ edition.workspace = true
 rust-version.workspace = true
 description = "Thin, platform-neutral Discord mapping for llmrc bots"
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+categories.workspace = true
+keywords = ["llm", "discord", "bot", "ai", "serenity"]
 
 [features]
 default = []

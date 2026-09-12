@@ -1,0 +1,116 @@
+name: Release
+
+# Publishing runs only for tags that match the workspace version, so the tag is
+# the single trigger and the manifest is the single source of truth.
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Validate packaging only; upload nothing to crates.io
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: "0"
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to immutable commits; bump the SHA and the trailing comment together.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      # No build cache here on purpose: this workflow is the only one that can
+      # reach the crates.io token, and a poisoned cache is a supply-chain vector.
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --all-features --all-targets --locked -- -D warnings
+      - run: cargo test --workspace --all-features --locked
+
+  version:
+    name: resolve version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      dry_run: ${{ steps.resolve.outputs.dry_run }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+      - id: resolve
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          version="$(cargo metadata --no-deps --format-version 1 --locked \
+            | jq -r '.packages[] | select(.name == "llmrc") | .version')"
+          echo "workspace version: ${version}"
+          if [ "${EVENT_NAME}" = "push" ]; then
+            tag="${REF_NAME#v}"
+            if [ "${tag}" != "${version}" ]; then
+              echo "::error::tag '${REF_NAME}' does not match workspace version '${version}'; bump [workspace.package].version before tagging"
+              exit 1
+            fi
+            dry_run=false
+          else
+            dry_run="${INPUT_DRY_RUN:-true}"
+          fi
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "dry_run=${dry_run}" >> "${GITHUB_OUTPUT}"
+
+  publish:
+    name: publish to crates.io
+    needs: [verify, version]
+    runs-on: ubuntu-latest
+    # The first release publishes 11 brand new crates, and crates.io allows a
+    # burst of 5 new crates followed by 1 every 10 minutes, so allow for it.
+    timeout-minutes: 180
+    environment: crates-io
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+      - name: Publish workspace crates in dependency order
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          DRY_RUN: ${{ needs.version.outputs.dry_run == 'true' && '1' || '0' }}
+        run: scripts/publish-crates.sh
+      - name: Create GitHub release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "${REF_NAME}" >/dev/null 2>&1; then
+            echo "release ${REF_NAME} already exists"
+          else
+            gh release create "${REF_NAME}" --title "${REF_NAME}" --generate-notes
+          fi

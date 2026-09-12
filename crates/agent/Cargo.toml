@@ -5,6 +5,10 @@ edition.workspace = true
 rust-version.workspace = true
 description = "Provider-backed tool-using agent runtime for llmrc"
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+categories.workspace = true
+keywords = ["llm", "agent", "ai", "tools", "async"]
 
 [dependencies]
 async-trait.workspace = true
