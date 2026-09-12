@@ -96,10 +96,24 @@ git push origin v0.2.0
 
 Pushing the tag starts the `Release` workflow:
 
-1. `verify` — rustfmt, clippy, and the full test suite.
+1. `verify` — rustfmt, clippy, the full test suite, and
+   `scripts/check-isolated-crates.sh`.
 2. `version` — fails fast when the tag does not match `[workspace.package].version`.
 3. `publish` — runs `scripts/publish-crates.sh` with `CARGO_REGISTRY_TOKEN`,
    then creates a GitHub release with generated notes.
+
+### Why the isolated build check exists
+
+`cargo test --workspace` unifies features across workspace members, so if any one
+crate enables a feature, every other crate sees it. A crate can therefore use a
+feature it never declared, pass CI, and then fail its release — which is exactly
+what happened to `llmrc-mcp` on the first `v0.1.0` attempt, where
+`cargo publish` refused the tarball with `unresolved import tokio::process`.
+
+`scripts/check-isolated-crates.sh` builds each crate on its own with only the
+features that crate declares, which is the view `cargo publish` uses. It runs in
+CI and in the release `verify` job, and fails if the crate list drifts from the
+workspace members.
 
 ---
 

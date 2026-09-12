@@ -91,6 +91,23 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
       - run: cargo doc --workspace --all-features --no-deps --locked
 
+  isolated:
+    name: isolated feature builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      # `cargo test --workspace` unifies features across members, so it cannot
+      # catch a crate that uses a feature it never declared. `cargo publish`
+      # builds the tarball without that help, so this is a release blocker.
+      - name: Build every crate without cross-crate feature unification
+        run: scripts/check-isolated-crates.sh
+
   packaging:
     name: packaging
     runs-on: ubuntu-latest

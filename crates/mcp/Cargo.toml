@@ -23,7 +23,11 @@ reqwest.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
-tokio.workspace = true
+# The stdio transport spawns child processes and reads their output, so this
+# crate needs `process` and `io-util` on top of the workspace defaults. Without
+# them it only compiled inside the workspace, where another crate enabled those
+# features by unification, and `cargo publish` rejected the packaged tarball.
+tokio = { workspace = true, features = ["io-util", "process"] }
 tokio-util.workspace = true
 rmcp = { version = "3.3", default-features = false, features = [
     "client",

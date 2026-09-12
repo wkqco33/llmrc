@@ -42,6 +42,9 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --workspace --all-features --all-targets --locked -- -D warnings
       - run: cargo test --workspace --all-features --locked
+      # The check that would have caught llmrc-mcp publishing without a declared
+      # `tokio/process` feature: build each crate with only what it declares.
+      - run: scripts/check-isolated-crates.sh
 
   version:
     name: resolve version

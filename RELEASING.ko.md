@@ -95,10 +95,23 @@ git push origin v0.2.0
 
 태그를 푸시하면 `Release` 워크플로가 시작됩니다.
 
-1. `verify` — rustfmt, clippy, 전체 테스트 스위트.
+1. `verify` — rustfmt, clippy, 전체 테스트 스위트, 그리고
+   `scripts/check-isolated-crates.sh`.
 2. `version` — 태그가 `[workspace.package].version`과 다르면 즉시 실패.
 3. `publish` — `CARGO_REGISTRY_TOKEN`으로 `scripts/publish-crates.sh`를 실행하고,
    자동 생성된 노트로 GitHub 릴리스를 만듭니다.
+
+### 격리 빌드 검사가 필요한 이유
+
+`cargo test --workspace`는 워크스페이스 멤버 간에 feature를 통합합니다. 따라서
+어느 한 크레이트가 feature를 켜면 다른 모든 크레이트가 그 feature를 보게 됩니다.
+그 결과 크레이트가 선언하지 않은 feature를 사용해도 CI를 통과하고 릴리스에서
+실패할 수 있습니다. 실제로 첫 `v0.1.0` 시도에서 `llmrc-mcp`가 이 문제로
+`cargo publish`의 타르볼 검증에서 `unresolved import tokio::process`로 거부되었습니다.
+
+`scripts/check-isolated-crates.sh`는 각 크레이트를 자신이 선언한 feature만으로
+단독 빌드하며, 이것이 `cargo publish`가 보는 관점입니다. 이 검사는 CI와 릴리스
+`verify` 작업에서 실행되며, 크레이트 목록이 워크스페이스 멤버와 어긋나면 실패합니다.
 
 ---
 
